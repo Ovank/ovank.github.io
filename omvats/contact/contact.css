@@ -1,0 +1,140 @@
+body{
+    background-color: rgb(8, 1, 1);
+}
+
+.page_contain{
+      width: 70%;
+      background-color: rgb(8, 1, 1);
+      margin-left: 15%;
+      margin-right: 15%;
+      border: 1px;
+      border-style: dashed;
+      border-color: #f2f2f2;
+   
+    
+      .topnav {
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+  
+        border: 1px;
+        border-style: dashed;
+        border-color: #f2f2f2;
+      }
+      
+  
+      .topnav a {
+        display: flex;
+        justify-content: space-between;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 14px 30px;
+        text-decoration: none;
+        font-size: 24px;
+        font-family: 'Open Sans', sans-serif;
+    
+        background-color: rgb(8, 1, 1);
+        border-style: none;
+  
+        border: 1px;
+        border-style: dashed;
+        border-color: #f2f2f2;
+      }
+      
+      .topnav a.active {
+        color: greenyellow;
+        text-decoration: underline;
+        text-decoration-color: greenyellow;
+        text-underline-offset: 5px;
+      }
+    
+      .hero{
+        font-family: 'Open Sans', sans-serif;
+        color: #f2f2f2;
+        margin-top: 4%;
+        margin-bottom: 0%;
+        border: 1px;
+        border-style: dashed;
+        border-color: #f2f2f2;
+        text-align: center;
+        h1{
+          font-size: 200%;
+          white-space: nowrap;
+          margin: 0 auto; 
+    
+        }
+    
+        h2{
+          white-space: nowrap;
+          margin: 1 auto; 
+        }
+    
+      }
+    
+
+    
+      .contact{
+        font-family: 'Open Sans', sans-serif;
+        color: #f2f2f2;
+        margin-top: 4%;
+        margin-bottom: 0%;
+        border: 1px;
+        border-style: dashed;
+        border-color: #f2f2f2;
+        text-align: left;
+
+        .contact-heading {
+            font-size: 55px;
+        }
+
+        .social-media-heading {
+            font-size: 35px;
+        }
+
+        .email-heading{
+            font-size: 35px;
+        }
+
+        .contact-content{
+            margin-top: 4%;
+            margin-bottom: 4%;
+            font-size: 20px;
+        }
+
+        .social-media-content{
+            margin-top: 2%;
+            margin-bottom: 2%;
+            font-size: 20px;
+        }
+
+        .email-content{
+            margin-top: 2%;
+            margin-bottom: 2%;
+            font-size: 20px;
+        }
+
+        .social-media-image{
+            text-align: center;
+
+            .linkedin{
+                padding-left: 4%;
+                padding-right: 10%;
+            }
+
+            .twitter{
+                padding-right: 10%;
+            }
+        }
+    
+      }
+    
+      .AboutMe{
+        font-family: 'Open Sans', sans-serif;
+        color: #f2f2f2;
+        text-align: center;
+      }
+    
+    
+    }
+    
+    
