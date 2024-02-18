@@ -10,7 +10,7 @@ export function WebHeader(active) {
 
     var header_html=`
     <div class="topnav">
-        <a id="home" href="./home/home.html">Home</button>
+        <a id="home" href="./home/home.html">Home</a>
         <a id="aboutMe" href="./aboutme/aboutme.html">About Me</a>
         <a id="blog" href="./blog/list.html">Blog</a>
         <a id="contact" href="./contact/contact.html">Contact Me</a>
@@ -60,9 +60,4 @@ export function WebHeader(active) {
     window.addEventListener('load', headerBar);
 }
 
-// Call the function to initialize the header generation 
-
-
-
-console.log("This is a test sentences.",nav_button[0].class_val)
-
+// Call the function to initialize the header generation
