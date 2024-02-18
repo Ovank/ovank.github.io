@@ -10,10 +10,10 @@ export function WebHeader(active) {
 
     var header_html=`
     <div class="topnav">
-        <a id="home" href="/omvats/home/home.html">Home</button>
-        <a id="aboutMe" href="/omvats/aboutme/aboutme.html">About Me</a>
-        <a id="blog" href="/omvats/blog/list.html">Blog</a>
-        <a id="contact" href="/omvats/contact/contact.html">Contact Me</a>
+        <a id="home" href="./home/home.html">Home</button>
+        <a id="aboutMe" href="./aboutme/aboutme.html">About Me</a>
+        <a id="blog" href="./blog/list.html">Blog</a>
+        <a id="contact" href="./contact/contact.html">Contact Me</a>
     </div>
     `
     
