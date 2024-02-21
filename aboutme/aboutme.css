@@ -3,10 +3,10 @@ body{
 }
 
 .page_contain{
-      width: 70%;
+      width: 80%;
       background-color: rgb(8, 1, 1);
-      margin-left: 15%;
-      margin-right: 15%;
+      margin-left: 10%;
+      margin-right: 10%;
       border: 1px;
       border-style: dashed;
       border-color: #f2f2f2;
@@ -113,6 +113,47 @@ body{
         font-family: 'Open Sans', sans-serif;
         color: #f2f2f2;
         text-align: left;
+
+        .intro{
+          padding-top: 2%;
+        
+        }
+
+        .list-view{
+          padding-top: 1%;
+
+          .list-view-heading{
+            font-size: 27px;
+          }
+        }
+
+        .about-me{
+          padding-top: 1%;
+
+          .about-me-heading{
+            font-size: 27px;
+          }
+        }
+
+        .intrest{
+          padding-top: 1%;
+
+          .intrest-heading{
+            font-size: 27px;
+          }
+        }
+
+        .work{
+          padding-top: 1%;
+
+          .work-heading{
+            font-size: 27px;
+          }
+        }
+
+        .end-note{
+          padding-top: 2%;
+        }
       }
     
     

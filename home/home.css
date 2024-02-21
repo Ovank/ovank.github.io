@@ -7,19 +7,12 @@ body{
       background-color: rgb(8, 1, 1);
       margin-left: 15%;
       margin-right: 15%;
-      border: 1px;
-      border-style: dashed;
-      border-color: #f2f2f2;
-   
+      border: 1px;   
     
       .topnav {
         overflow: hidden;
         display: flex;
         justify-content: center;
-  
-        border: 1px;
-        border-style: dashed;
-        border-color: #f2f2f2;
       }
       
   
@@ -35,10 +28,6 @@ body{
     
         background-color: rgb(8, 1, 1);
         border-style: none;
-  
-        border: 1px;
-        border-style: dashed;
-        border-color: #f2f2f2;
       }
       
       .topnav a.active {
@@ -53,9 +42,6 @@ body{
         color: #f2f2f2;
         margin-top: 4%;
         margin-bottom: 0%;
-        border: 1px;
-        border-style: dashed;
-        border-color: #f2f2f2;
         text-align: center;
         h1{
           font-size: 200%;

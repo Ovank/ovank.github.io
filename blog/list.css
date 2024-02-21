@@ -1,14 +1,14 @@
 body{
     background-color: rgb(8, 1, 1);
   }
-  .page_contain{
+.page_contain{
       width: 70%;
       background-color: rgb(8, 1, 1);
       margin-left: 15%;
       margin-right: 15%;
       border: 1px;
-      border-style: dashed;
-      border-color: #f2f2f2;
+      /*border-style: dashed;
+      border-color: #f2f2f2;*/
      
     
       .topnav {
@@ -47,74 +47,43 @@ body{
         text-underline-offset: 5px;
       }
     
-      .hero{
-        font-family: 'Open Sans', sans-serif;
-        color: #f2f2f2;
-        margin-top: 4%;
-        margin-bottom: 0%;
-        border: 1px;
-        border-style: dashed;
-        border-color: #f2f2f2;
-        text-align: center;
-        h1{
-          font-size: 200%;
-          white-space: nowrap;
-          margin: 0 auto; 
-    
-        }
-    
-        h2{
-          white-space: nowrap;
-          margin: 1 auto; 
-        }
-    
-      }
-    
-      h4{
-        color: white;
-        text-align: center;
-        blockquote::before {
-          content: open-quote;
-        }
-        blockquote::after {
-          content: close-quote;
-        }
-        blockquote {
-          quotes: "“" "”" "‘" "’";
-        }
-    
-      }
-    
-      .contact{
-        font-family: 'Open Sans', sans-serif;
-        color: #f2f2f2;
-        margin-top: 20%;
-        margin-bottom: 12%;
-        border: 1px;
-        border-style: dashed;
-        border-color: #f2f2f2;
-        text-align: center;
-        h1{
-          font-size: 200%;
-          white-space: nowrap;
-          margin: 0 auto; 
-    
-        }
-    
-        h2{
-          white-space: nowrap;
-          margin: 1 auto; 
-        }
-    
-      }
-    
-      .AboutMe{
+      .blog{
+        
         font-family: 'Open Sans', sans-serif;
         color: #f2f2f2;
         text-align: center;
+
+        .blog-list{
+
+          .blog-list-box{
+
+            box-shadow: 1px 1px 1px 1px rgb(255, 255, 255), 1px 1px 1px 1px rgb(255, 255, 255);
+            padding-top: 1%;
+            padding-bottom: 1%;
+            margin-top: 1%;
+            margin-bottom: 4%;
+            padding-left: 1%;
+            padding-right: 1%;
+
+            .blog-heading{
+              color: #fff;
+              text-align: left;
+              font-size: 25px;
+              
+            }
+
+            .blog-info{
+              color: rgba(200, 198, 198, 0.662);
+              text-align: left;
+              font-size: 11px;
+              padding-top: 1%;
+            }
+
+          }
+        }
       }
     
     
-    }
+}
     
     
