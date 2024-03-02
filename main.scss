@@ -1,23 +1,92 @@
+/* Small devices such as large phones (640px and up) */
+@media only screen and (min-width: 40em) {
+  .page_contain{
+    height: 100%;
+
+    .topnav a{
+      padding-left: 55px;
+      padding-right: 55px;
+      padding-top: 26px;
+      padding-bottom: 26px;
+    }
+
+      .hero{
+        padding-top: 155px;
+        border: 3px;
+        border-style: solid;
+        border-color: #f2f2f2;
+        .profile_img{
+
+
+
+        }
+      }
+    
+  }
+}
+
+/* Medium devices such as tablets (768px and up) */
+@media only screen and (min-width: 48em) {
+
+}
+
+/* Large devices such as laptops (1024px and up) */
+@media only screen and (min-width: 64em) {
+
+  .page_contain{
+      width: 70%;
+      margin-left: 15%;
+      margin-right: 15%;
+
+
+      .topnav a{
+
+        padding: 14px 30px;
+      }
+
+      .Home{
+
+        .hero{
+
+          .profile_img{
+
+            width:400px;
+            height:400px;
+
+            border: 3px;
+            border-style: solid;
+            border-color: #f2f2f2;
+          }
+        }
+      }
+  }
+}
+
+/* Largest devices such as desktops (1280px and up) */
+@media only screen and (min-width: 80em) {
+
+}
+
 body{
   background-color: rgb(8, 1, 1);
 }
+
 .page_contain{
-    width: 70%;
+    
     background-color: rgb(8, 1, 1);
-    margin-left: 15%;
-    margin-right: 15%;
-    border: 1px;
-    border-style: dashed;
+
+    border: 3px;
+    border-style: solid;
     border-color: #f2f2f2;
-   
+       
   
     .topnav {
       overflow: hidden;
       display: flex;
       justify-content: center;
 
-      border: 1px;
-      border-style: dashed;
+      border: 3px;
+      border-style: solid;
       border-color: #f2f2f2;
     }
     
@@ -27,16 +96,16 @@ body{
       justify-content: space-between;
       color: #f2f2f2;
       text-align: center;
-      padding: 14px 30px;
+      
       text-decoration: none;
       font-size: 24px;
       font-family: 'Open Sans', sans-serif;
   
       background-color: rgb(8, 1, 1);
-      //border-style: none;
+      border-style: none;
 
-      border: 1px;
-      border-style: dashed;
+      border: 3px;
+      border-style: solid;
       border-color: #f2f2f2;
     }
     
@@ -52,9 +121,6 @@ body{
       color: #f2f2f2;
       margin-top: 4%;
       margin-bottom: 0%;
-      border: 1px;
-      border-style: dashed;
-      border-color: #f2f2f2;
       text-align: center;
       h1{
         font-size: 200%;
@@ -116,5 +182,5 @@ body{
   
   
   }
-  
-  
+
+
