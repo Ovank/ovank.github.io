@@ -1,20 +1,56 @@
 /* Small devices such as large phones (640px and up) */
-@media only screen and (min-width: 40em) and (orientation: portrait) {
+@media only screen and (min-width: 40em) {
   .page_contain{
+
+    background-color: rgb(8, 1, 1);
     height: 100%;
 
+    .topnav {
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+
+    }
+
     .topnav a{
+
+      overflow: hidden;
+      display: flex;
+
       padding-left: 55px;
       padding-right: 55px;
       padding-top: 26px;
       padding-bottom: 26px;
+
+      justify-content: space-between;
+      color: #f2f2f2;
+      text-align: center;
+      
+      text-decoration: none;
+      font-size: 24px;
+      font-family: 'Open Sans', sans-serif;
+  
+      background-color: rgb(8, 1, 1);
+      border-style: none;
     }
 
+    .topnav a.active {
+      color: greenyellow;
+      text-decoration: underline;
+      text-decoration-color: greenyellow;
+      text-underline-offset: 5px;
+      font-weight: 700;
+    }
+
+    .Home{
       .hero{
-        padding-top: 230px;
-        border: 3px;
-        border-style: solid;
-        border-color: #f2f2f2;
+        padding-top: 300px;
+
+        font-family: 'Open Sans', sans-serif;
+        color: #f2f2f2;
+        margin-top: 4%;
+        margin-bottom: 0%;
+        text-align: center;
 
         .profile_img{
           width: 600px;
@@ -33,49 +69,124 @@
       }
 
       .quote{
+        color: white;
+        text-align: center;
+        
+        blockquote::before {
+          content: open-quote;
+        }
+        blockquote::after {
+          content: close-quote;
+        }
+        blockquote {
+          quotes: "“" "”" "‘" "’";
+        }
+  
         font-size: 33px;
       }
-    
-  }
-}
 
-@media only screen and (min-width: 40em) and (orientation: landscape) {
-  .page_contain{
-    height: 100%;
-
-    .topnav a{
-      padding-left: 55px;
-      padding-right: 55px;
-      padding-top: 26px;
-      padding-bottom: 26px;
     }
 
-      .hero{
-        padding-top: 230px;
-        border: 3px;
-        border-style: solid;
-        border-color: #f2f2f2;
+    .contact{
+      font-family: 'Open Sans', sans-serif;
+      color: #f2f2f2;
+      margin-top: 4%;
+      margin-bottom: 0%;
+      
+      text-align: left;
 
-        .profile_img{
-          width: 600px;
-          height:600px;
-        }
+      .contact-heading {
+          font-size: 55px;
+      }
 
-        .Intro{
-          font-size:64px;
-          padding-top: 20px;
-        }
+      .social-media-heading {
+          font-size: 35px;
+      }
 
-        .JobProfile{
-          font-size:46px;
-          padding-top: 20px;
+      .email-heading{
+          font-size: 35px;
+      }
+
+      .contact-content{
+          margin-top: 4%;
+          margin-bottom: 4%;
+          font-size: 20px;
+      }
+
+      .social-media-content{
+          margin-top: 2%;
+          margin-bottom: 2%;
+          font-size: 20px;
+      }
+
+      .email-content{
+          margin-top: 2%;
+          margin-bottom: 2%;
+          font-size: 20px;
+      }
+
+      .social-media-image{
+          text-align: center;
+
+          .linkedin{
+              padding-left: 4%;
+              padding-right: 10%;
+          }
+
+          .twitter{
+              padding-right: 10%;
+          }
+      }
+  
+    }
+
+    .AboutMe{
+      font-family: 'Open Sans', sans-serif;
+      color: #f2f2f2;
+      text-align: left;
+
+      .intro{
+        padding-top: 1%;
+      
+      }
+
+      .list-view{
+        padding-top: 0%;
+
+        .list-view-heading{
+          font-size: 27px;
         }
       }
 
-      .quote{
-        font-size: 33px;
+      .about-me{
+        padding-top: 0%;
+
+        .about-me-heading{
+          font-size: 27px;
+        }
       }
-    
+
+      .intrest{
+        padding-top: 0%;
+
+        .intrest-heading{
+          font-size: 27px;
+        }
+      }
+
+      .work{
+        padding-top: 0%;
+
+        .work-heading{
+          font-size: 27px;
+        }
+      }
+
+      .end-note{
+        padding-top: 1%;
+      }
+    }
+   
   }
 }
 
@@ -88,60 +199,206 @@
 /* Large devices such as laptops (1024px and up) */
 @media only screen and (min-width: 64em) {
 
+  body{
+    background-color: rgb(8, 1, 1);
+  }
+
   .page_contain{
+
+      background-color: rgb(8, 1, 1);
+
       width: 70%;
       margin-left: 15%;
       margin-right: 15%;
+      
+      .topnav {
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
 
+      }
 
       .topnav a{
-        padding: 14px 30px;
+
+        padding: 15px 40px;
+
+        display: flex;
+        justify-content: space-between;
+        color: #f2f2f2;
+        text-align: center;
+        
+        text-decoration: none;
+        font-size: 24px;
+        font-family: 'Open Sans', sans-serif;
+    
+        background-color: rgb(8, 1, 1);
+        border-style: none;
+  
       }
+
+      .topnav a.active {
+        color: greenyellow;
+        text-decoration: underline;
+        text-decoration-color: greenyellow;
+        text-underline-offset: 5px;
+        font-weight: 700;
+      }
+
 
       .Home{
         .hero{
-          padding-top: 1px;
-          border: 3px;
-          border-style: solid;
-          border-color: #f2f2f2;
-          
+          padding-top: 0px;
+          font-family: 'Open Sans', sans-serif;
+          color: #f2f2f2;
+          margin-top: 2%;
+          margin-bottom: 0%;
+          text-align: center;
+
           .profile_img{
             width:400px;
             height:400px;
           }
           .Intro{
-            font-size:40px;
+            font-size:37px;
             padding-top: 2px;
           }
   
           .JobProfile{
-            font-size:35px;
-            padding-top: 2px;
+            font-size:30px;
           }
   
+        }
+
+        .quote{
+          color: white;
+          text-align: center;
+          
+          blockquote::before {
+            content: open-quote;
+          }
+          blockquote::after {
+            content: close-quote;
+          }
+          blockquote {
+            quotes: "“" "”" "‘" "’";
+          }
+
+          font-size: 15px;
+        }
+
+      }
+
+      .contact{
+        font-family: 'Open Sans', sans-serif;
+        color: #f2f2f2;
+        margin-top: 4%;
+        margin-bottom: 0%;
+        
+        text-align: left;
+
+        .contact-heading {
+            font-size: 55px;
+        }
+
+        .social-media-heading {
+            font-size: 35px;
+        }
+
+        .email-heading{
+            font-size: 35px;
+        }
+
+        .contact-content{
+            margin-top: 4%;
+            margin-bottom: 4%;
+            font-size: 20px;
+        }
+
+        .social-media-content{
+            margin-top: 2%;
+            margin-bottom: 2%;
+            font-size: 20px;
+        }
+
+        .email-content{
+            margin-top: 2%;
+            margin-bottom: 2%;
+            font-size: 20px;
+        }
+
+        .social-media-image{
+            text-align: center;
+
+            .linkedin{
+                padding-left: 4%;
+                padding-right: 10%;
+            }
+
+            .twitter{
+                padding-right: 10%;
+            }
+        }
+    
+      }
+
+      .AboutMe{
+        font-family: 'Open Sans', sans-serif;
+        color: #f2f2f2;
+        text-align: left;
+
+        .intro{
+          padding-top: 1%;
+        
+        }
+
+        .list-view{
+          padding-top: 0%;
+
+          .list-view-heading{
+            font-size: 27px;
+          }
+        }
+
+        .about-me{
+          padding-top: 0%;
+
+          .about-me-heading{
+            font-size: 27px;
+          }
+        }
+
+        .intrest{
+          padding-top: 0%;
+
+          .intrest-heading{
+            font-size: 27px;
+          }
+        }
+
+        .work{
+          padding-top: 0%;
+
+          .work-heading{
+            font-size: 27px;
+          }
+        }
+
+        .end-note{
+          padding-top: 1%;
         }
       }
   }
 }
 
-/* Largest devices such as desktops (1280px and up) */
-@media only screen and (min-width: 80em) {
-
-}
-
-body{
-  background-color: rgb(8, 1, 1);
-}
-
+/*
 .page_contain{
     
     background-color: rgb(8, 1, 1);
 
     border: 3px;
     border-style: solid;
-    border-color: #f2f2f2;
-       
-  
+    border-color: #3d03f9;
+
     .topnav {
       overflow: hidden;
       display: flex;
@@ -151,7 +408,6 @@ body{
       border-style: solid;
       border-color: #f2f2f2;
     }
-    
 
     .topnav a {
       display: flex;
@@ -200,17 +456,7 @@ body{
     }
   
     .quote{
-      color: white;
-      text-align: center;
-      blockquote::before {
-        content: open-quote;
-      }
-      blockquote::after {
-        content: close-quote;
-      }
-      blockquote {
-        quotes: "“" "”" "‘" "’";
-      }
+
     }
   
     .contact{
@@ -246,3 +492,4 @@ body{
   }
 
 
+*/
