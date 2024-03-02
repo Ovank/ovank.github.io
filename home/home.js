@@ -8,17 +8,17 @@ function homePageContain(){
     var homePage_html=`
     <div class="Home">
         <div class="hero">
-            <span class="profile_img"><img src="../assets/profile.png"></span>
-            <h1>Hello <span>&#128075;</span>, I am Om Vats.<span>&#128522;</span></h1>
-            <h2>I am a software Development Engineer <span>&#128640;</span></h2>
+            <span><img class="profile_img" src="../assets/profile.png"></span>
+            <div class="Intro" >Hello <span>&#128075;</span>, I am Om Vats.<span>&#128522;</span></div>
+            <div class="JobProfile">I am a software Development Engineer <span>&#128640;</span></div>
         </div>
-        <div class="quote">
-          <h4>
+        <div>
+          <div class="quote">
             <blockquote>
             Life is like riding a <span  style='font-size:50px;'>&#128690;</span>. 
             To keep your balance, you must keep moving.
             </blockquote> ------&nbsp;<i>Albert Einstein</i>
-          </h4>
+          </div>
         </div>          
       </div>
     `
