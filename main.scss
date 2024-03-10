@@ -22,8 +22,8 @@
       overflow: hidden;
       display: flex;
 
-      padding-left: 55px;
-      padding-right: 55px;
+      padding-left: 30px;
+      padding-right: 30px;
       padding-top: 26px;
       padding-bottom: 26px;
 
@@ -32,7 +32,7 @@
       text-align: center;
       
       text-decoration: none;
-      font-size: 24px;
+      font-size: 49px;
       font-family: 'Open Sans', sans-serif;
   
       background-color: rgb(8, 1, 1);
@@ -95,26 +95,26 @@
     .contact{
       font-family: 'Open Sans', sans-serif;
       color: #f2f2f2;
-      color: rgba(21, 255, 0, 0.2) ;
-      margin-top: 40%;
+
+      margin-top: 20%;
       margin-bottom: 4%;
       
       text-align: left;
 
       .contact-heading {
-          font-size: 55px;
+          font-size: 65px;
           margin-top: 7%;
           margin-bottom: 2%;
       }
 
       .social-media-heading {
-          font-size: 35px;
+          font-size: 55px;
           margin-top: 7%;
           margin-bottom: 2%;
       }
 
       .email-heading{
-          font-size: 35px;
+          font-size: 55px;
 
           margin-top: 7%;
           margin-bottom: 2%;
@@ -123,19 +123,19 @@
       .contact-content{
         margin-top: 7%;
         margin-bottom: 2%;
-          font-size: 20px;
+          font-size: 45px;
       }
 
       .social-media-content{
         margin-top: 3%;
         margin-bottom: 2%;
-          font-size: 20px;
+          font-size: 45px;
       }
 
       .email-content{
         margin-top: 7%;
         margin-bottom: 2%;
-          font-size: 20px;
+          font-size: 45px;
       }
 
       .social-media-image{
@@ -158,46 +158,47 @@
       color: #f2f2f2;
       text-align: left;
 
-      padding-top: 180px;
+      padding-top: 100px;
       padding-left: 1%;
       padding-right: 1%;
+      font-size: 40px;
 
       .intro{
-        padding-top: 4%;
-        padding-bottom: 4%;
+        padding-top: 3%;
+        padding-bottom: 3%;
       
       }
 
       .list-view{
-        padding-top: 6%;
-        padding-bottom: 2%;
+        padding-top: 4%;
+        padding-bottom: 1%;
 
         .list-view-heading{
-          font-size: 27px;
+          font-size: 55px;
         }
       }
 
       .about-me{
-        padding-top: 6%;
+        padding-top: 4%;
 
         .about-me-heading{
-          font-size: 27px;
+          font-size: 55px;
         }
       }
 
       .intrest{
-        padding-top: 6%;
+        padding-top: 4%;
 
         .intrest-heading{
-          font-size: 27px;
+          font-size: 55px;
         }
       }
 
       .work{
-        padding-top: 6%;
+        padding-top: 4%;
 
         .work-heading{
-          font-size: 27px;
+          font-size: 55px;
         }
       }
 
@@ -211,6 +212,9 @@
       font-family: 'Open Sans', sans-serif;
       color: #f2f2f2;
       text-align: center;
+
+      border:  4px;
+      border-color: white;
 
       .blog-list{
 
@@ -228,22 +232,27 @@
           .blog-heading{
             color: #fff;
             text-align: left;
-            font-size: 25px;
+            font-size: 55px;
             
           }
 
           .blog-info{
             color: rgba(200, 198, 198, 0.662);
             text-align: left;
-            font-size: 11px;
+            font-size: 33px;
             padding-top: 1%;
           }
-
+          border:  4px;
+          border-color: white;
         }
       }
 
       .article{
         text-align: left;
+        font-size: 55px;
+
+        border:  4px;
+        border-color: white;
 
         img {
           display: block;
@@ -503,6 +512,9 @@
   
         .article{
           text-align: left;
+          font-size: 19px;
+          padding-bottom: 1%;
+
   
           img {
             display: block;
