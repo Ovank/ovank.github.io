@@ -51,7 +51,6 @@ export function WebHeader(active) {
 
                 console.error("Button with id '" + link + "' not found");
             }
-            console.log(link , ":" , linkElement);
         }
 
         document.getElementsByClassName('page_contain')[0].appendChild(tempheadContainer.firstElementChild);

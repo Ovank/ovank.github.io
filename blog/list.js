@@ -6,12 +6,15 @@ const blogListPath = "/blog/list.json";
 
 function createBlogListItem(href, heading, publishDate, readTime, author) {
     return `
-        <div id="blog-item" class="blog-item" data-load-content="${href}">
-            <div class="blog-list-box">
-                <div class="blog-heading">${heading}</div>
-                <div class="blog-info">Date: ${publishDate} | Estimated Reading Time: ${readTime} | Author: ${author}</div>
+        <a href="${href}">
+            <div id="blog-item" class="blog-item" data-load-content="${href}" >
+                <div class="blog-list-box">
+                    <div class="blog-heading">${heading}</div>
+                    <div class="blog-info">Date: ${publishDate} | Estimated Reading Time: ${readTime} | Author: ${author}</div>
+                </div>
             </div>
-        </div>
+        </a>
+
     `;
 }
 
@@ -62,8 +65,6 @@ async function listBlogPageContent() {
                 item.Author
             ));
             
-           // console.log(blogListItems);
-
             const blogPageHTML = createBlogPage(blogListItems.join(''));
             document.getElementById('listblogpage').innerHTML += blogPageHTML;
         }
@@ -92,22 +93,6 @@ async function load_article_content(article_file_location){
 async function blogPage() {
 
     await listBlogPageContent();
-    
-    document.getElementById('blog-item').addEventListener('click',async function(){
-
-        var article_content_path = document.getElementById('blog-item').getAttribute('data-load-content');
-
-        var article_content_html = await load_article_content(article_content_path);
-
-        console.log(article_content_html)
-        
-        document.getElementById('blog-box').innerHTML = article_content_html;
-
-        /*document.querySelectorAll('pre code').forEach((el) => {
-            hljs.highlightElement(el);
-          });*/
-
-    });
 }
 
 // Call the function to initialize the header generation 
