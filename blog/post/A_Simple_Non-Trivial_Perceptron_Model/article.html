@@ -1,0 +1,355 @@
+<html>
+  <head>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="/Highlight/styles/agate.css">
+    <script src="/Highlight/highlight.min.js"></script>
+    <script src="/Highlight/languages/python.js"></script>
+    <script>hljs.highlightAll();</script>
+    <title>A Simple Non-Trivial Perceptron Model - Vats-Log</title>
+    <link rel="icon" href="/assets/logo.svg" type="image/svg">
+    <style>
+      table { border-collapse: collapse; margin: 20px auto; }
+      th, td { border: 1px solid #555; padding: 8px 14px; color: #f2f2f2; }
+      th { background-color: #333; }
+      img { max-width: 100%; }
+      a { color: greenyellow; }
+    </style>
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [['$', '$']],
+          displayMath: [['$$', '$$']],
+          processEscapes: true
+        },
+        options: {
+          skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+  </head>
+  <body>
+    <div class="page_contain">
+            <div class="topnav">
+                <a id="home" href="/home/home.html">Home</a>
+                <a id="aboutMe" href="/aboutme/aboutme.html">About Me</a>
+                <a id="blog" class="active" href="/blog/list.html">Blog</a>
+                <a id="contact" href="/contact/contact.html">Contact Me</a>
+            </div>
+      <div class="Article">
+        <a class="back-btn" href="/blog/list.html">&larr; Back to Blog</a>
+        <h1>A Simple Non-Trivial Perceptron Model</h1>
+<p>The perceptron is the building block of all deep learning models. The idea of the perceptron is used in all the small to big models in today's deep learning.
+Knowing how the perceptron works can give you basic insight into the layer calculations we do in the forward pass of deep learning models.</p>
+<p>In this article I will quickly introduce you to the idea of the perceptron and the perceptron learning algorithm, and then work out a non-toy example
+using the perceptron learning model.</p>
+<p><img alt="Perceptron Model" src="res/perceptron-img.png" /></p>
+<h2>What is a Perceptron?</h2>
+<p>A perceptron is a single artificial neuron. It takes multiple input values, multiplies each by a corresponding weight, sums them up (including a bias term), and passes the result through an activation function to produce an output.</p>
+<p>Mathematically, for an input vector $\mathbf{x} = [x_1, x_2, \ldots, x_n]$ and weight vector $\mathbf{w} = [w_0, w_1, w_2, \ldots, w_n]$ (where $w_0$ is the bias), the perceptron computes:</p>
+<p>$$z = w_0 + w_1 x_1 + w_2 x_2 + \cdots + w_n x_n = \mathbf{w} \cdot \mathbf{x}$$</p>
+<p>The output is then:</p>
+<p>$$\hat{y} = \text{sign}(z) = \begin{cases} +1 & \text{if } z > 0 \\ -1 & \text{if } z \leq 0 \end{cases}$$</p>
+<h2>The Perceptron Learning Algorithm</h2>
+<p>The perceptron learns by updating weights whenever it makes a wrong prediction. The update rule is:</p>
+<p>$$\mathbf{w} \leftarrow \mathbf{w} + \eta \cdot (y - \hat{y}) \cdot \mathbf{x}$$</p>
+<p>where $\eta$ is the learning rate, $y$ is the true label, and $\hat{y}$ is the predicted label.</p>
+<p>The key insight: if the prediction is correct ($y = \hat{y}$), the difference $(y - \hat{y}) = 0$ and no update happens. If the prediction is wrong, the weights shift in the direction that would have produced the correct answer.</p>
+<p>We repeat this process for multiple epochs (passes over the training data) until the model converges or we exhaust our iteration budget.</p>
+<h2>Smart Meeting Interrupt Filter</h2>
+<h3>Problem Idea</h3>
+<p>Design a perceptron that decides: <strong>Should you interrupt someone during a meeting?</strong> (Yes = +1, No = -1)</p>
+<p>We have 4 input features (each scored 1–10):</p>
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Description</th>
+<th>Higher means...</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Urgency</strong></td>
+<td>How urgent is your point?</td>
+<td>More urgent to speak</td>
+</tr>
+<tr>
+<td><strong>Speaker</strong></td>
+<td>How senior/important is the current speaker?</td>
+<td>Harder to interrupt</td>
+</tr>
+<tr>
+<td><strong>Critical</strong></td>
+<td>How critical is the topic being discussed?</td>
+<td>Harder to interrupt</td>
+</tr>
+<tr>
+<td><strong>Time Left</strong></td>
+<td>How much time is left in the meeting?</td>
+<td>More time, less need to rush</td>
+</tr>
+</tbody>
+</table>
+<p>Intuitively, you should interrupt (+1) when urgency is high and the speaker importance, topic criticality, and remaining time are low.</p>
+<h3>Training Data</h3>
+<table>
+<thead>
+<tr>
+<th>Urgency</th>
+<th>Speaker</th>
+<th>Critical</th>
+<th>Time Left</th>
+<th>Label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>9</td>
+<td>2</td>
+<td>3</td>
+<td>2</td>
+<td>+1</td>
+</tr>
+<tr>
+<td>8</td>
+<td>9</td>
+<td>9</td>
+<td>5</td>
+<td>-1</td>
+</tr>
+<tr>
+<td>6</td>
+<td>4</td>
+<td>5</td>
+<td>1</td>
+<td>+1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>8</td>
+<td>7</td>
+<td>8</td>
+<td>-1</td>
+</tr>
+<tr>
+<td>7</td>
+<td>3</td>
+<td>4</td>
+<td>9</td>
+<td>-1</td>
+</tr>
+<tr>
+<td>10</td>
+<td>1</td>
+<td>2</td>
+<td>1</td>
+<td>+1</td>
+</tr>
+</tbody>
+</table>
+<h3>Validation Data</h3>
+<table>
+<thead>
+<tr>
+<th>Urgency</th>
+<th>Speaker</th>
+<th>Critical</th>
+<th>Time Left</th>
+<th>Expected Output</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>8</td>
+<td>3</td>
+<td>4</td>
+<td>2</td>
+<td>+1</td>
+</tr>
+<tr>
+<td>5</td>
+<td>7</td>
+<td>6</td>
+<td>6</td>
+<td>-1</td>
+</tr>
+<tr>
+<td>9</td>
+<td>5</td>
+<td>8</td>
+<td>1</td>
+<td>+1</td>
+</tr>
+<tr>
+<td>2</td>
+<td>9</td>
+<td>9</td>
+<td>7</td>
+<td>-1</td>
+</tr>
+<tr>
+<td>6</td>
+<td>2</td>
+<td>3</td>
+<td>9</td>
+<td>-1</td>
+</tr>
+<tr>
+<td>7</td>
+<td>4</td>
+<td>5</td>
+<td>3</td>
+<td>+1</td>
+</tr>
+</tbody>
+</table>
+<h2>Implementation</h2>
+<p>Let's build the perceptron step by step.</p>
+<h3>The Perceptron Class</h3>
+<pre><code class="language-python">import numpy as np
+
+class Perceptron:
+
+    def __init__(self, n_features: int, learning_rate: float, n_iterations: int):
+        self.n_features = n_features
+        self.lr = learning_rate
+        self.epochs = n_iterations
+        self.activation_function = self._unit_step_function
+
+        # +1 for the bias weight (w0)
+        self.weights = np.zeros(n_features + 1)
+
+    def _weighted_sum(self, feature_matrix: np.ndarray) -&gt; np.ndarray:
+        &quot;&quot;&quot;Compute w0 + w1*x1 + w2*x2 + ... + wn*xn for each sample.&quot;&quot;&quot;
+        return feature_matrix @ self.weights
+
+    def _unit_step_function(self, value: float) -&gt; int:
+        return -1 if value &lt;= 0 else 1
+
+    def predict(self, feature_vector: np.ndarray) -&gt; int:
+        &quot;&quot;&quot;Predict the label for a single sample (with bias column already prepended).&quot;&quot;&quot;
+        z = self._weighted_sum(feature_vector.reshape(1, -1))[0]
+        return self.activation_function(z)
+
+    def fit(self, X: np.ndarray, y: np.ndarray):
+        &quot;&quot;&quot;Train the perceptron on the given data.
+
+        X: (n_samples, n_features) — raw features (no bias column).
+        y: (n_samples,) — labels (+1 or -1).
+        &quot;&quot;&quot;
+        # Prepend a column of 1s for the bias term
+        ones = np.ones((X.shape[0], 1))
+        X_bias = np.hstack([ones, X])
+
+        for epoch in range(1, self.epochs + 1):
+            total_error = 0
+            for i in range(X_bias.shape[0]):
+                prediction = self.activation_function(
+                    self._weighted_sum(X_bias[i].reshape(1, -1))[0]
+                )
+                error = y[i] - prediction
+                if error != 0:
+                    self.weights += self.lr * error * X_bias[i]
+                    total_error += 1
+
+            print(f&quot;Epoch {epoch:3d} | Errors: {total_error} | Weights: {np.round(self.weights, 4)}&quot;)
+
+            if total_error == 0:
+                print(f&quot;\nConverged after {epoch} epochs!&quot;)
+                return
+
+        print(f&quot;\nTraining completed after {self.epochs} epochs.&quot;)
+
+    def evaluate(self, X: np.ndarray, y: np.ndarray) -&gt; float:
+        &quot;&quot;&quot;Evaluate accuracy on a dataset. Returns accuracy as a fraction.&quot;&quot;&quot;
+        ones = np.ones((X.shape[0], 1))
+        X_bias = np.hstack([ones, X])
+
+        correct = 0
+        for i in range(X_bias.shape[0]):
+            prediction = self.predict(X_bias[i])
+            label = &quot;✓&quot; if prediction == y[i] else &quot;✗&quot;
+            print(f&quot;  Input: {X[i]} | Predicted: {prediction:+d} | Actual: {int(y[i]):+d} | {label}&quot;)
+            if prediction == y[i]:
+                correct += 1
+
+        accuracy = correct / len(y)
+        return accuracy
+</code></pre>
+<h3>Putting It All Together</h3>
+<pre><code class="language-python">if __name__ == &quot;__main__&quot;:
+    train_data = np.array([
+        [9 , 2, 3, 2, +1],
+        [8 , 9, 9, 5, -1],
+        [6 , 4, 5, 1, +1],
+        [3 , 8, 7, 8, -1],
+        [7 , 3, 4, 9, -1],
+        [10, 1, 2, 1, +1]
+    ])
+
+    test_data = np.array([
+        [8, 3, 4, 2, +1],
+        [5, 7, 6, 6, -1],
+        [9, 5, 8, 1, +1],
+        [2, 9, 9, 7, -1],
+        [6, 2, 3, 9, -1],
+        [7, 4, 5, 3, +1],
+    ])
+
+    X_train, y_train = train_data[:, :-1], train_data[:, -1]
+    X_test, y_test = test_data[:, :-1], test_data[:, -1]
+
+    # Create and train the perceptron
+    model = Perceptron(n_features=4, learning_rate=0.1, n_iterations=100)
+
+    print(&quot;=== Training ===&quot;)
+    model.fit(X_train, y_train)
+
+    print(f&quot;\nFinal weights: [bias, urgency, speaker, critical, time_left]&quot;)
+    print(f&quot;  {np.round(model.weights, 4)}&quot;)
+
+    print(&quot;\n=== Training Set Evaluation ===&quot;)
+    train_acc = model.evaluate(X_train, y_train)
+    print(f&quot;  Training Accuracy: {train_acc * 100:.1f}%&quot;)
+
+    print(&quot;\n=== Validation Set Evaluation ===&quot;)
+    test_acc = model.evaluate(X_test, y_test)
+    print(f&quot;  Validation Accuracy: {test_acc * 100:.1f}%&quot;)
+</code></pre>
+<h2>Understanding the Results</h2>
+<p>When you run this code, you will see the perceptron iterating over the training data and adjusting its weights each epoch. Let's trace what happens:</p>
+<ol>
+<li><strong>Initialization</strong>: All weights start at zero — the model knows nothing.</li>
+<li><strong>First epoch</strong>: Every sample is likely misclassified, producing many weight updates.</li>
+<li><strong>Subsequent epochs</strong>: As weights improve, fewer errors occur per epoch.</li>
+<li><strong>Convergence</strong>: Once the perceptron finds a set of weights that correctly classifies all training samples, it stops.</li>
+</ol>
+<h3>Interpreting the Weights</h3>
+<p>After training, the weight vector tells us what the perceptron has learned:</p>
+<ul>
+<li><strong>Positive weight for Urgency</strong>: Higher urgency pushes toward +1 (interrupt). Makes sense.</li>
+<li><strong>Negative weight for Speaker</strong>: A more important speaker pushes toward -1 (don't interrupt). Makes sense.</li>
+<li><strong>Negative weight for Critical</strong>: Critical discussion pushes toward -1 (don't interrupt). Makes sense.</li>
+<li><strong>Negative weight for Time Left</strong>: More time remaining means less urgency to speak up. Makes sense.</li>
+</ul>
+<p>The perceptron has essentially learned a decision boundary — a hyperplane in 4D feature space that separates "interrupt" from "don't interrupt" scenarios.</p>
+<h2>Limitations</h2>
+<p>The perceptron can only solve <strong>linearly separable</strong> problems. If there's no hyperplane that can perfectly separate the two classes, the perceptron learning algorithm will never converge — it will keep oscillating and adjusting weights forever. This is why we set a maximum number of iterations.</p>
+<p>For problems that are not linearly separable, you would need:
+- <strong>Multi-layer perceptrons (MLPs)</strong> — stacking perceptrons into layers with non-linear activation functions.
+- This is exactly where deep learning begins.</p>
+<h2>Conclusion</h2>
+<p>The perceptron, despite its simplicity, captures the core mechanics that power all neural networks:
+1. <strong>Weighted sum</strong> of inputs (the forward pass)
+2. <strong>Activation function</strong> to produce output
+3. <strong>Error-driven weight updates</strong> (the learning rule)</p>
+<p>Every layer in a modern deep learning model repeats these three steps. Understanding the perceptron gives you the intuition needed to reason about how larger networks learn — they just do it with many more neurons, layers, and a more sophisticated weight update algorithm (backpropagation with gradient descent instead of the simple perceptron rule).</p>
+      </div>
+      <footer class="site-footer">
+                <p>&copy; 2024 Om Vats &middot; <a href="/home/home.html">Home</a> &middot; <a href="/blog/list.html">Blog</a> &middot; <a href="/contact/contact.html">Contact</a></p>
+      </footer>
+    </div>
+  </body>
+</html>

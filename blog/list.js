@@ -1,7 +1,3 @@
-import { WebHeader,header_html } from "../main.js";
-
-// Move the initialization to the HTML file where the script is included.
-
 const blogListPath = "/blog/list.json";
 
 function createBlogListItem(href, heading, publishDate, readTime, author) {
@@ -66,13 +62,19 @@ async function listBlogPageContent() {
             ));
             
             const blogPageHTML = createBlogPage(blogListItems.join(''));
-            document.getElementById('listblogpage').innerHTML += blogPageHTML;
+            const temp = document.createElement('div');
+            temp.innerHTML = blogPageHTML;
+            const footer = document.querySelector('.site-footer');
+            const container = document.getElementById('listblogpage');
+            if (footer) {
+                container.insertBefore(temp.firstElementChild, footer);
+            } else {
+                container.appendChild(temp.firstElementChild);
+            }
         }
     } catch (error) {
         console.error('Error in listBlogPageContent:', error);
     }
-
-    window.addEventListener('load', listBlogPageContent);
 }
 
 async function load_article_content(article_file_location){
@@ -94,9 +96,6 @@ async function blogPage() {
 
     await listBlogPageContent();
 }
-
-// Call the function to initialize the header generation 
-WebHeader("blog");
 
 blogPage();
 

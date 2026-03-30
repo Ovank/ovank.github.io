@@ -2,9 +2,9 @@
 <html>
   <head>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="/main.scss">
+    <link rel="stylesheet" href="/main.css">
     <link rel="stylesheet" href="/Highlight/styles/agate.css">
-    <script type="module" src="list.js"></script>
+    <script type="module" src="list.js?v=20260330"></script>
     <script src="/Highlight/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
     <title>Vats-Log</title>
@@ -14,7 +14,16 @@
   </head>
   <body>
     <div id="listblogpage" class="page_contain">
+      <div class="topnav">
+        <a id="home" href="/home/home.html">Home</a>
+        <a id="aboutMe" href="/aboutme/aboutme.html">About Me</a>
+        <a id="blog" class="active" href="/blog/list.html">Blog</a>
+        <a id="contact" href="/contact/contact.html">Contact Me</a>
+      </div>
       <div id="main-article-content" class="main-article-content-class"></div>
+      <footer class="site-footer">
+        <p>&copy; 2024 Om Vats &middot; <a href="/home/home.html">Home</a> &middot; <a href="/blog/list.html">Blog</a> &middot; <a href="/contact/contact.html">Contact</a></p>
+      </footer>
     </div>
   </body>
 </html>

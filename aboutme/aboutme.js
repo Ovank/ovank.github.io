@@ -6,7 +6,7 @@ WebHeader("aboutMe"); // need to move to html file.
 
 function AboutmeContent(){
     var aboutme_html=`
-    <div class="aboutme">
+    <div class="AboutMe">
     <div class="intro">
       Hello &#128075; , I'm Om Vats, I am a Software Development Engineer based in the vibrant city of Bengaluru, India. 🚀
     </div>
