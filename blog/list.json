@@ -1,10 +1,16 @@
 [
-
   {
     "Heading": "A Simple Non-Trivial Perceptron Model",
     "Author": "Om Vats",
-    "Generated Date": "30 March, 2026",
+    "Generated Date": "11 April, 2026",
     "ReadTime": "8 Min",
     "path": "/blog/post/A_Simple_Non-Trivial_Perceptron_Model/article.html"
+  },
+  {
+    "Heading": "Acrobot Using Q-Learning",
+    "Author": "Om Vats",
+    "Generated Date": "16 April, 2026",
+    "ReadTime": "18 Min",
+    "path": "/blog/post/Acrobot_Using_Q-Learning/article.html"
   }
 ]

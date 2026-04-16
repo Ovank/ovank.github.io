@@ -1,5 +1,8 @@
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/main.css">
     <link rel="stylesheet" href="/Highlight/styles/agate.css">
@@ -13,6 +16,7 @@
       th, td { border: 1px solid #555; padding: 8px 14px; color: #f2f2f2; }
       th { background-color: #333; }
       img { max-width: 100%; }
+      video { max-width: 100%; border-radius: 8px; margin: 10px 0; }
       a { color: greenyellow; }
     </style>
     <script>
@@ -44,7 +48,7 @@
 Knowing how the perceptron works can give you basic insight into the layer calculations we do in the forward pass of deep learning models.</p>
 <p>In this article I will quickly introduce you to the idea of the perceptron and the perceptron learning algorithm, and then work out a non-toy example
 using the perceptron learning model.</p>
-<p><img alt="Perceptron Model" src="res/perceptron-img.png" height="400" width="666"/></p>
+<p><img alt="Perceptron Model" src="res/perceptron-img.png" /></p>
 <h2>What is a Perceptron?</h2>
 <p>A perceptron is a single artificial neuron. It takes multiple input values, multiplies each by a corresponding weight, sums them up (including a bias term), and passes the result through an activation function to produce an output.</p>
 <p>Mathematically, for an input vector $\mathbf{x} = [x_1, x_2, \ldots, x_n]$ and weight vector $\mathbf{w} = [w_0, w_1, w_2, \ldots, w_n]$ (where $w_0$ is the bias), the perceptron computes:</p>
