@@ -19,6 +19,76 @@
       a { color: greenyellow; }
       .toc a { color: #81d4fa; text-decoration: none; }
       .toc a:hover { text-decoration: underline; color: #b3e5fc; }
+            .article-tags {
+                margin-top: 42px;
+                padding: 20px 22px;
+                border: 1px solid rgba(129, 212, 250, 0.18);
+                border-radius: 18px;
+                background: linear-gradient(180deg, rgba(15, 26, 29, 0.9), rgba(8, 15, 18, 0.94));
+                box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+            }
+            .article-tags-label {
+                margin: 0 0 14px;
+                color: #9ed8ea;
+                font-size: 0.82rem;
+                letter-spacing: 0.18em;
+                text-transform: uppercase;
+            }
+            .article-tags-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            .article-tag {
+                display: inline-flex;
+                align-items: center;
+                padding: 8px 14px;
+                border-radius: 999px;
+                background: rgba(129, 212, 250, 0.12);
+                border: 1px solid rgba(129, 212, 250, 0.28);
+                color: #d7f5ff;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.86rem;
+                line-height: 1;
+            }
+            .scroll-top-btn {
+                position: fixed;
+                right: 28px;
+                bottom: 28px;
+                width: 54px;
+                height: 54px;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                border: 0;
+                border-radius: 999px;
+                background: linear-gradient(135deg, rgba(129, 212, 250, 0.96), rgba(181, 232, 250, 0.96));
+                color: #06212d;
+                box-shadow: 0 18px 36px rgba(0, 0, 0, 0.28);
+                cursor: pointer;
+                opacity: 0;
+                pointer-events: none;
+                transform: translateY(14px);
+                transition: opacity 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+                z-index: 1200;
+            }
+            .scroll-top-btn svg {
+                width: 20px;
+                height: 20px;
+            }
+            .scroll-top-btn.is-visible {
+                opacity: 1;
+                pointer-events: auto;
+                transform: translateY(0);
+            }
+            .scroll-top-btn:hover {
+                box-shadow: 0 22px 44px rgba(0, 0, 0, 0.34);
+            }
+            @media (min-width: 1100px) {
+                .scroll-top-btn {
+                    display: inline-flex;
+                }
+            }
     </style>
     <script>
       window.MathJax = {
@@ -996,12 +1066,39 @@ current_lr = max(self.lr_min, current_lr * self.lr_decay)  # lr_decay = 0.99998<
 </table>
 <p>The single biggest contributor to improvement is <strong>reward shaping</strong> - giving the agent a continuous signal based on tip height completely changes the learning dynamics. The other changes (finer bins, optimistic init, slower &epsilon; decay, LR decay) each contribute incrementally but are most effective in combination.</p>
 <p>The trade-off is a larger Q-table (480k vs 23k entries) and slightly more complex reward logic. But the table is still tiny by modern standards, and the shaping function is a simple closed-form expression.</p>
+                <section class="article-tags" aria-label="Article tags"><p class="article-tags-label">Tags</p><div class="article-tags-list"><span class="article-tag">reinforcement learning</span><span class="article-tag">q-learning</span><span class="article-tag">acrobot</span><span class="article-tag">gymnasium</span><span class="article-tag">python</span></div></section>
       </div>
       <footer class="site-footer">
                 <p>&copy; 2024 Om Vats &middot; <a href="/home/home.html">Home</a> &middot; <a href="/blog/list.html">Blog</a> &middot; <a href="/contact/contact.html">Contact</a></p>
       </footer>
     </div>
+        <button class="scroll-top-btn" type="button" aria-label="Go to top" title="Go to top">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 5l-7 7 1.4 1.4 4.6-4.6V19h2V8.8l4.6 4.6L19 12l-7-7z" fill="currentColor"/>
+            </svg>
+        </button>
     <script>
+            var scrollTopButton = document.querySelector('.scroll-top-btn');
+            function syncScrollTopButton() {
+                if (!scrollTopButton) {
+                    return;
+                }
+                if (window.innerWidth >= 1100 && window.scrollY > 360) {
+                    scrollTopButton.classList.add('is-visible');
+                } else {
+                    scrollTopButton.classList.remove('is-visible');
+                }
+            }
+
+            if (scrollTopButton) {
+                scrollTopButton.addEventListener('click', function() {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            }
+            window.addEventListener('scroll', syncScrollTopButton, { passive: true });
+            window.addEventListener('resize', syncScrollTopButton);
+            syncScrollTopButton();
+
       document.querySelectorAll('video').forEach(function(video) {
         video.pause();
         video.dataset.ended = 'false';
