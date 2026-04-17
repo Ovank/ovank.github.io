@@ -17,6 +17,8 @@
       img { max-width: 100%; }
       video { max-width: 100%; border-radius: 8px; margin: 10px 0; }
       a { color: greenyellow; }
+      .toc a { color: #81d4fa; text-decoration: none; }
+      .toc a:hover { text-decoration: underline; color: #b3e5fc; }
     </style>
     <script>
       window.MathJax = {
@@ -45,11 +47,54 @@
         <h1>Acrobot Using Q-Learning</h1>
 <p>In this blog post, I'll walk through my approach to solving the <a href="https://gymnasium.farama.org/environments/classic_replay/acrobot/">Acrobot</a> problem using <a href="https://huggingface.co/learn/deep-rl-course/unit2/q-learning">Q-Learning</a>. Q-Learning is best suited for <strong>discrete state spaces</strong>, meaning it does not directly handle continuous observations. Because of this, applying Q-Learning to this environment requires modifying or approximating the state space into a discrete form.</p>
 <p>Before getting into how I handled that, let's first take a quick look at the problem itself, along with its observation and action spaces.</p>
+<hr />
+<nav class="toc"><h2>Index</h2>
+<ol><li><a href="#problem-statement">Quick discussion of the problem statement</a>
+</li><li><a href="#solution-discussion">Back to the solution discussion and thought process</a>
+</li><li><a href="#q-table">Q-table, update logic, and action selection</a>
+</li><li><a href="#training">Training the model</a>
+<ul><li><a href="#training-observations">Training observations</a>
+<ul><li><a href="#episode-reward">Episode Reward</a>
+</li><li><a href="#exploration-signals">Exploration Signals (Entropy & &epsilon;)</a>
+</li><li><a href="#q-value-evolution">Q-value Evolution</a>
+</li><li><a href="#td-error">TD Error (per step)</a>
+</li></ul>
+</li></ul>
+</li><li><a href="#evaluation">Evaluating the trained model</a>
+<ul><li><a href="#best-runs">Best runs</a>
+</li><li><a href="#worst-runs">Worst runs</a>
+</li></ul>
+</li><li><a href="#testing-at-scale">Testing at scale</a>
+<ul><li><a href="#observations">Observations</a>
+</li></ul>
+</li><li><a href="#closing-thoughts">My Closing thoughts on this solution</a>
+</li><li><a href="#improving-baseline">Improving the baseline — what I changed and why</a>
+<ul><li><a href="#change-1">Change 1: Simplified discretization with atan2 and np.digitize</a>
+</li><li><a href="#change-2">Change 2: Optimistic Q-table initialization</a>
+</li><li><a href="#change-3">Change 3: Potential-based reward shaping</a>
+</li><li><a href="#change-4">Change 4: Learning rate decay</a>
+</li><li><a href="#change-5">Change 5: Tuned hyperparameters</a>
+</li></ul>
+</li><li><a href="#results-improved">Results and observations (improved)</a>
+<ul><li><a href="#episode-reward-improved">Episode Reward (improved)</a>
+</li><li><a href="#td-error-improved">TD Error (improved)</a>
+</li><li><a href="#q-value-improved">Q-value Evolution (improved)</a>
+</li><li><a href="#exploration-improved">Exploration Signals (improved)</a>
+</li></ul>
+</li><li><a href="#evaluation-improved">Evaluating the trained model (improved)</a>
+<ul><li><a href="#best-runs-improved">Best runs (improved)</a>
+</li><li><a href="#worst-runs-improved">Worst runs (improved)</a>
+</li></ul>
+</li><li><a href="#testing-improved">Testing at scale (improved)</a>
+</li><li><a href="#summary-improvements">Summary of improvements</a>
+</li></ol></nav>
+<hr />
+<p><a id="problem-statement"></a></p>
 <h2>Quick discussion of the problem statement</h2>
 <p><img alt="problem_statement" src="res/problem_statement.png" width="50%"/></p>
 <p style="text-align: center;"><em>&theta; (theta) representation for the system.</em></p>
 
-<p>The Acrobot is essentially a 2-link pendulum, where only the second joint(red-one) is actuated. The objective is to swing the system such that the tip of the second link reaches (or exceeds) a target height. In our problem the height condition should satisfys <code> -cos(&theta;<sub>1</sub>) -cos(&theta;<sub>1</sub> + &theta;<sub>2</sub>) &gt; 1 </code>. </p>
+<p>The Acrobot is essentially a 2-link pendulum, where only the second joint (red one) is actuated. The objective is to swing the system such that the tip of the second link reaches (or exceeds) a target height. In our problem the height condition should satisfy <code> -cos(&theta;<sub>1</sub>) -cos(&theta;<sub>1</sub> + &theta;<sub>2</sub>) &gt; 1 </code>.</p>
 <p>The angles <code>&theta;<sub>1</sub></code> and <code>&theta;<sub>2</sub></code> represent the relative orientations of the two links, as shown in the figure. Instead of directly observing these angles, the environment provides <code>sin(&theta;<sub>1</sub>)</code>, <code>cos(&theta;<sub>1</sub>)</code>, <code>sin(&theta;<sub>2</sub>)</code>, and <code>cos(&theta;<sub>2</sub>)</code>. These four values uniquely encode the angular positions while avoiding discontinuities.</p>
 <p>In addition to this, we also observe the angular velocities of both joints. Altogether, this gives us a <strong>6-dimensional observation vector</strong>, which fully describes the state of the system at any given time.</p>
 <p>The action space in this environment is discrete, consisting of three possible actions applied to the actuated joint (highlighted in red):</p>
@@ -64,6 +109,7 @@
 <p>Apply positive torque <code>(2)</code></p>
 </li>
 </ul>
+<p><a id="solution-discussion"></a></p>
 <h2>Back to the solution discussion and thought process</h2>
 <p>Now that we've clearly discussed the problem state-action values and gotten that out of the way, let's dive back into my solution. In this attempt at discretization, I've chosen to use naive discretization rather than coarse tiling.</p>
 <blockquote>
@@ -95,11 +141,11 @@
 <p>So instead of thinking of angle as a line from <code>&theta; &rarr; 360&deg;</code>, I'm treating it like a <strong>circle</strong>, which is what it actually is. However, this comes with a trade-off.</p>
 <p>Since I'm discretizing <strong>cosine and sine separately</strong>, recovering the final bin index is not straightforward. The approach I took was to find the <strong>intersection of the bins</strong> obtained from <code>cosine</code> and <code>sine</code>, and use that as the final position bin.</p>
 <p>That was the idea, at least.</p>
-<p>In practice, during testing, I ran into cases where-due to small numerical errors or noise in observation-the cosine and sine values would land in bins that <strong>don't overlap at all</strong>. In those cases, there's no valid intersection, and we effectively end up with <em>no bin</em>.</p>
+<p>In practice, during testing, I ran into cases where — due to small numerical errors or noise in observation — the cosine and sine values would land in bins that <strong>don't overlap at all</strong>. In those cases, there's no valid intersection, and we effectively end up with <em>no bin</em>.</p>
 <p>To handle this, I added a <a href="#fallback-logic">fallback</a>:
 instead of intersection, I take the <strong>union of the candidate bins</strong> and use their average as an approximation.</p>
 <p>It's not perfect, but it works well enough in practice and keeps the system stable.</p>
-<p>So yes, this adds a bit of complexity to the implementation-but overall, it gives a much more <strong>consistent and physically meaningful representation of angles</strong>, which is worth the trade-off here.
+<p>So yes, this adds a bit of complexity to the implementation — but overall, it gives a much more <strong>consistent and physically meaningful representation of angles</strong>, which is worth the trade-off here.
 </p>
 </blockquote>
 <p><br></p>
@@ -123,7 +169,7 @@ That said, this fallback is admittedly a bit of a hack.</p>
 <p><img alt="velocity_bins" src="res/velocity_lines.png" /></p>
 <p>With this setup, we end up with <strong>7 bins</strong> for one rod and <strong>9 bins</strong> for the other in terms of angular velocity.</p>
 <blockquote>
-<p>So, the total number of states due to my discritization in this problems is: 11 x 11 x 7 x 9 = 7,623 states, and since each state has 3 possible actions, the total number of entries in the Q-table becomes: 11 x 11 x 7 x 9 x 3 = 22,869 state-action values.</p>
+<p>So, the total number of states due to my discretization in this problem is: 11 x 11 x 7 x 9 = 7,623 states, and since each state has 3 possible actions, the total number of entries in the Q-table becomes: 11 x 11 x 7 x 9 x 3 = 22,869 state-action values.</p>
 </blockquote>
 <p>This is still orders of magnitude smaller than my initial design, which had around 40 billion state-action values.</p>
 <p>This is <em>orders of magnitude</em> smaller than my initial design, which had around 40 billion state-action values. With this revised setup, the experiment becomes tractable, and I can realistically train the model using Q-learning.</p>
@@ -233,6 +279,7 @@ class Binning:
 </code></pre>
 <p style="text-align: center;"><i>Modified code for better readiblity</i></p>
 
+<p><a id="q-table"></a></p>
 <h2>Q-table, update logic, and action selection</h2>
 <p>Similarly, below is the implementation of the <strong>Q-table</strong>, along with the <strong>update rule</strong> and <strong>action selection strategy</strong>.</p>
 <p>The idea here is fairly straightforward:
@@ -325,6 +372,7 @@ class Policy:
 </code></pre>
 <p style="text-align: center;"><i>Modified code for better readiblity</i></p>
 
+<p><a id="training"></a></p>
 <h2>Training the model</h2>
 <p>Now that the conceptual implementation is in place and translated into code, I trained the model for <strong>50,000 episodes</strong>, with each episode capped at <strong>500 steps</strong> (the environment's episode limit).</p>
 <pre><code class="language-python">def training_step(self, max_episode_steps: int) -&gt; None:
@@ -422,7 +470,9 @@ epsilon_decay = 0.995
 </p>
 </blockquote>
 <p>Below are some key plots from the training process.</p>
+<p><a id="training-observations"></a></p>
 <h3>Training observations</h3>
+<p><a id="episode-reward"></a></p>
 <h4>Episode Reward</h4>
 <p><img alt="traning_trace" src="res/episode_reward.png" /></p>
 <ul>
@@ -442,6 +492,7 @@ epsilon_decay = 0.995
 <p>This overall trajectory indicates the agent is learning progressively better control policies, even if the improvement is slow and noisy.</p>
 </li>
 </ul>
+<p><a id="exploration-signals"></a></p>
 <h4>Exploration Signals (Entropy &amp; &epsilon;)</h4>
 <p><img alt="traning_trace" src="res/exploration.png" /></p>
 <ul>
@@ -462,6 +513,7 @@ Later &rarr; lower entropy &rarr; more confident, deterministic behavior.</p>
 <p>The slow, steady entropy decline is a healthy sign: the policy is stabilizing gradually without collapsing prematurely.</p>
 </li>
 </ul>
+<p><a id="q-value-evolution"></a></p>
 <h4>Q-value Evolution</h4>
 <p><img alt="traning_trace" src="res/q_values.png" /></p>
 <ul>
@@ -492,6 +544,7 @@ Later &rarr; lower entropy &rarr; more confident, deterministic behavior.</p>
 </ul>
 </li>
 </ul>
+<p><a id="td-error"></a></p>
 <h4>TD Error (per step)</h4>
 <p><img alt="traning_trace" src="res/td_error.png" /></p>
 <ul>
@@ -514,12 +567,14 @@ Later &rarr; lower entropy &rarr; more confident, deterministic behavior.</p>
 </li>
 </ul>
 <p>Overall, while the learning is noisy (as expected), the signals collectively indicate that the agent is <strong>learning meaningful behavior</strong>.</p>
+<p><a id="evaluation"></a></p>
 <h2>Evaluating the trained model</h2>
 <p>After training, I used the learned policy to evaluate performance on the task. Below are some recorded runs of the Acrobot using the trained Q-learning model.</p>
+<p><a id="best-runs"></a></p>
 <h3>Best runs (sorted by steps to reach the goal)</h3>
 <p>These are some of the more efficient trajectories, where the agent reaches the goal relatively quickly.</p>
 <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">
-<p>  <div style="flex:1; min-width:200px;">
+<div style="flex:1; min-width:200px;">
     <video autoplay playsinline controls style="width:100%;">
       <source src="res/episode_146s_web.mp4" type="video/mp4" />
     </video>
@@ -533,10 +588,10 @@ Later &rarr; lower entropy &rarr; more confident, deterministic behavior.</p>
     <video autoplay playsinline controls style="width:100%;">
       <source src="res/episode_756s_web.mp4" type="video/mp4" />
     </video>
-  </div></p>
+  </div>
 </div>
 <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">
-<p>  <div style="flex:1; min-width:200px;">
+<div style="flex:1; min-width:200px;">
     <video autoplay playsinline controls style="width:100%;">
       <source src="res/episode_282s_web.mp4" type="video/mp4" />
     </video>
@@ -550,12 +605,13 @@ Later &rarr; lower entropy &rarr; more confident, deterministic behavior.</p>
     <video autoplay playsinline controls style="width:100%;">
       <source src="res/episode_1s_web.mp4" type="video/mp4" />
     </video>
-  </div></p>
+  </div>
 </div>
+<p><a id="worst-runs"></a></p>
 <h3>Worst runs</h3>
 <p>These are cases where the agent struggles - either taking too long or failing to build sufficient momentum.</p>
 <div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">
-<p>  <div style="flex:1; min-width:200px;">
+<div style="flex:1; min-width:200px;">
     <video autoplay playsinline controls style="width:100%;">
       <source src="res/episode_8s_web.mp4" type="video/mp4" />
     </video>
@@ -569,11 +625,13 @@ Later &rarr; lower entropy &rarr; more confident, deterministic behavior.</p>
     <video autoplay playsinline controls style="width:100%;">
       <source src="res/episode_88s_web.mp4" type="video/mp4" />
     </video>
-  </div></p>
+  </div>
 </div>
+<p><a id="testing-at-scale"></a></p>
 <h2>Testing at scale</h2>
 <p>To better understand the model's overall performance, I ran it for <strong>1 million episodes</strong> and analyzed the distribution of steps taken to reach the goal.</p>
 <p><img alt="1mill_test_run" src="res/steps_histogram.png" /></p>
+<p><a id="observations"></a></p>
 <h3>Observations</h3>
 <ul>
 <li>
@@ -601,10 +659,11 @@ Later &rarr; lower entropy &rarr; more confident, deterministic behavior.</p>
 <blockquote>
 <p><strong>Good enough to work - but not perfect due to limited resolution and generalization.</strong></p>
 </blockquote>
+<p><a id="closing-thoughts"></a></p>
 <h2>My Closing thoughts on this solution</h2>
 <p>Looking back, what initially felt like a straightforward Q-learning problem turned into a lesson in <strong>state representation and practicality</strong>.</p>
-<p>The biggest mistake I made early on wasn't in the learning algorithm-it was in how I chose to represent the state space. Moving from extremely fine discretization to a more constrained and thoughtful binning made the problem go from <em>completely infeasible</em> to something I could actually train and iterate on.</p>
-<p>That shift-thinking less about "maximum precision" and more about <strong>where precision actually matters</strong>-made all the difference.</p>
+<p>The biggest mistake I made early on wasn't in the learning algorithm — it was in how I chose to represent the state space. Moving from extremely fine discretization to a more constrained and thoughtful binning made the problem go from <em>completely infeasible</em> to something I could actually train and iterate on.</p>
+<p>That shift — thinking less about "maximum precision" and more about <strong>where precision actually matters</strong>-made all the difference.</p>
 <p>At the same time, this setup still has clear limitations:</p>
 <ul>
 <li>
@@ -630,8 +689,313 @@ Later &rarr; lower entropy &rarr; more confident, deterministic behavior.</p>
 <p>and let the model learn a better representation of the state space</p>
 </li>
 </ul>
-<p>As for this solution, it serves as a <strong>baseline</strong>-a reference point to compare against other approaches I'll explore next for solving the same problem.</p>
+<p>As for this solution, it serves as a <strong>baseline</strong> — a reference point to compare against other approaches I'll explore next for solving the same problem.</p>
 <p><a href="https://github.com/Ovank/Acrobat-rl/blob/main/acrobat_naive_q_learning.ipynb">link-to-comple-code</a></p>
+<hr />
+<p><strong>P.S. - Update with improvements to the code for better results.</strong>
+Here’s the blog update section documenting the changes and results:</p>
+<p><a id="improving-baseline"></a></p>
+<h2>Improving the baseline — what I changed and why</h2>
+<p>After the initial 50,000-episode run, I revisited the code with three goals:</p>
+<ul>
+<li>
+<p><strong>faster learning</strong>,</p>
+</li>
+<li>
+<p><strong>better final performance</strong>, and</p>
+</li>
+<li>
+<p><strong>fewer failure cases</strong>.</p>
+</li>
+</ul>
+<p>Below, I document each change, the reasoning behind it, and what the updated training curves reveal.</p>
+<p><a id="change-1"></a></p>
+<h3>Change 1: Simplified discretization with <code>atan2</code> and <code>np.digitize</code></h3>
+<blockquote>
+<p>Initially, I discretized angles by binning <code>cos &theta;</code> and <code>sin &theta;</code> separately, and then finding the intersection of the resulting bins. This required additional fallback logic (union averaging) whenever numerical noise caused the intersection to be empty. <br></p>
+</blockquote>
+<p>I had previously mentioned the idea of using <code>atan2(sin θ, cos θ)</code>, which completely removes the need for intersection logic. Following that approach, I now recover the angle directly using:</p>
+<p>$$
+\theta = \operatorname{atan2}(\sin \theta,\ \cos \theta)
+$$</p>
+<p>and then discretize it using <code>np.digitize</code> with uniformly spaced edges over <code>[-π, π]</code>. This is the exact approach I had noted earlier as “something I’d revisit” — and in practice, it turns out to be significantly cleaner and more robust.</p>
+<pre><code class="language-python"># Before: complex intersection logic
+cos_bins = self._find_bin_indices(self.cos_bins, cos_val)
+sin_bins = self._find_bin_indices(self.sin_bins, sin_val)
+common = set(cos_bins) &amp; set(sin_bins)
+# ... fallback to union average if empty
+
+# After: direct and robust
+theta1 = np.arctan2(sin1, cos1)
+t1 = int(np.clip(np.digitize(theta1, self.angle_edges) - 1, 0, self.n_angle_bins - 1))
+</code></pre>
+<p>In addition to simplifying the logic, I also increased the discretization resolution:</p>
+<ul>
+<li>
+<p>Angle bins: <strong>11 &rarr; 20</strong></p>
+</li>
+<li>
+<p>Velocity bins: <strong>7/9 (non-uniform) &rarr; 20 uniform bins each</strong></p>
+</li>
+</ul>
+<p>This increases the Q-table size from:</p>
+<pre><code>11 × 11 × 7 × 9 × 3 = 22,869
+</code></pre>
+<p>to:</p>
+<pre><code>20 × 20 × 20 × 20 × 3 = 480,000
+</code></pre>
+<p>This is still very manageable in memory, while providing much finer coverage of the state space.</p>
+<blockquote>
+<p>The earlier non-uniform velocity binning (finer near zero, coarser at extremes) was a reasonable heuristic. However, using uniform bins with a higher count achieves a similar effective resolution without the need for manual tuning. <br></p>
+</blockquote>
+<p><a id="change-2"></a></p>
+<p>Here’s a refined version that keeps your tone while tightening the language and sharpening the technical explanation:</p>
+<h3>Change 2: Optimistic Q-table initialization</h3>
+<blockquote>
+<p>Earlier, the Q-table was initialized to <strong>all zeros</strong> (<code>np.zeros</code>). <br></p>
+</blockquote>
+<p>Now, I initialize every entry to <strong>5.0</strong> using <code>np.full(..., fill_value=5.0)</code>.</p>
+<p>The intuition is straightforward: if the agent starts by assuming that every unexplored state-action pair has a value of 5.0-while the true returns are mostly negative due to step penalties-then each new experience will tend to <em>lower</em> that estimate. This creates a natural pressure for the agent to <strong>try all actions at least once</strong> in a given state before the Q-values begin to stabilize.</p>
+<p>In effect, this acts as a form of <strong>systematic exploration</strong>, complementing &epsilon;-greedy rather than relying on it entirely.</p>
+<pre><code class="language-python"># Before
+self.q_table = np.zeros((...), dtype=np.float32)
+
+# After
+self.q_table = np.full((...), fill_value=5.0, dtype=np.float32)
+</code></pre>
+<blockquote>
+<p>This technique- <em>optimistic initialization</em> is well known and particularly effective in sparse- or negative-reward environments like Acrobot, where the agent might otherwise spend many episodes without discovering useful behavior.</p>
+</blockquote>
+<p><a id="change-3"></a></p>
+<h3>Change 3: Potential-based reward shaping</h3>
+<blockquote>
+<p>This is the most impactful change. The original setup used the <strong>raw environment reward</strong> (-1 per step, 0 at termination), which provides almost no learning signal. The agent only learns that shorter episodes are better, but gets no guidance on <em>how</em> to reach the goal.</p>
+</blockquote>
+<p>To address this, I introduced <strong>potential-based reward shaping</strong> using the <strong>tip height</strong> of the Acrobot:</p>
+<p>$$
+\phi(s) = -\cos(\theta_1) - \cos(\theta_1 + \theta_2)
+$$</p>
+<p>This is exactly the same quantity the environment uses to determine goal completion (goal condition: $\phi(s) > 1$). The shaping reward is defined using the standard potential-based form:</p>
+<p>$$
+F(s, s') = \gamma \cdot \phi(s') - \phi(s)
+$$</p>
+<p>This formulation is important because it is <strong>guaranteed to preserve the optimal policy</strong> (<a href="https://people.eecs.berkeley.edu/~pabbeel/cs287-fa09/readings/NgHaradaRussell-shaping-ICML1999.pdf">Ng et al., 1999</a>), while providing the agent with a <strong>dense and meaningful learning signal</strong>. In practice, this means the agent is immediately rewarded for swinging higher, even if it hasn’t yet reached the goal.</p>
+<p>On top of that, I added a <strong>+100 bonus</strong> when the episode terminates successfully. This helps reinforce successful trajectories more strongly and speeds up convergence.</p>
+<pre><code class="language-python">@staticmethod
+def _shape_reward(obs, next_obs, raw_reward, terminated):
+    gamma = 0.99
+    phi_s  = _tip_height(obs)
+    phi_sp = _tip_height(next_obs)
+    shaping = gamma * phi_sp - phi_s
+
+    bonus = 100.0 if terminated else 0.0
+    return raw_reward + shaping + bonus
+</code></pre>
+<p>One important detail: the <strong>original (unshaped) reward is still used for logging</strong>. This ensures that all training curves remain directly comparable to the baseline, making it easier to evaluate the actual impact of shaping.</p>
+<p><a id="change-4"></a></p>
+<h3>Change 4: Learning rate decay</h3>
+<blockquote>
+<p>In the earlier run, the learning rate was fixed at <code>α = 0.1</code> throughout training.</p>
+</blockquote>
+<p>Instead of keeping the learning rate static, I switched to a <strong>decaying schedule</strong>. Training now starts at <code>α = 0.15</code> and gradually decays per episode down to a minimum of <code>0.01</code>:</p>
+<p><code>python id="w6s2j1"
+current_lr = max(self.lr_min, current_lr * self.lr_decay)  # lr_decay = 0.99998</code></p>
+<p>The intuition here is fairly straightforward:</p>
+<ul>
+<li>
+<p>A <strong>higher &alpha; early on</strong> allows the agent to incorporate new information aggressively during exploration.</p>
+</li>
+<li>
+<p>A <strong>lower &alpha; later</strong> helps stabilize learning and prevents oscillations once the policy starts to converge.</p>
+</li>
+</ul>
+<p>This gives a better balance between <strong>fast learning initially</strong> and <strong>stable refinement toward the end</strong>.</p>
+<p><a id="change-5"></a></p>
+<h3>Change 5: Tuned hyperparameters</h3>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Before</th>
+<th>After</th>
+<th>Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Episodes</td>
+<td>50,000</td>
+<td>80,000</td>
+<td>Increased training budget</td>
+</tr>
+<tr>
+<td>&epsilon; start</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>Unchanged</td>
+</tr>
+<tr>
+<td>&epsilon; end</td>
+<td>0.05</td>
+<td>0.01</td>
+<td>Greedier final policy</td>
+</tr>
+<tr>
+<td>&epsilon; decay</td>
+<td>0.995</td>
+<td>0.9997</td>
+<td>Much slower — longer exploration</td>
+</tr>
+<tr>
+<td>Learning rate</td>
+<td>0.1</td>
+<td>0.15 → 0.01</td>
+<td>Higher start with decay</td>
+</tr>
+<tr>
+<td>Bins (angle)</td>
+<td>11</td>
+<td>20</td>
+<td>Finer resolution</td>
+</tr>
+<tr>
+<td>Bins (vel1)</td>
+<td>7</td>
+<td>20</td>
+<td>Finer + uniform</td>
+</tr>
+<tr>
+<td>Bins (vel2)</td>
+<td>9</td>
+<td>20</td>
+<td>Finer + uniform</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>&epsilon; decay</strong> is the most notable change here. With <code>0.995</code>, epsilon reached its minimum within ~5,000 episodes. With <code>0.9997</code>, it now takes roughly <strong>15,000–20,000 episodes</strong> to decay.</p>
+<p>This gives the agent <strong>significantly more time to explore</strong>, which works especially well in combination with the improved reward signal and optimistic initialization.</p>
+<p><a id="results-improved"></a></p>
+<h2>Results and observations</h2>
+<p><a id="episode-reward-improved"></a></p>
+<h3>Episode Reward</h3>
+<p><img alt="Episode_reward" src="res/episode_reward_80k.png" /></p>
+<p>The rolling-500 average now reaches approximately <strong>-100 to -110</strong>, compared to <strong>-270 to -280</strong> in the baseline. This is a dramatic improvement - the agent is solving episodes in roughly 100 steps on average, versus ~280 before.</p>
+<p>The reward curve also <strong>plateaus clearly</strong> around episode 15,000–20,000, unlike the baseline where it was still trending upward (oscillating alot) at episode 50,000. This indicates the agent has converged to a near-stable policy much earlier, and the additional episodes serve mainly for refinement.</p>
+<p>The raw per-episode variance is still high (spanning -500 to near 0), which is inherent to the stochastic environment and &epsilon;-greedy exploration.</p>
+<p><a id="td-error-improved"></a></p>
+<h3>TD Error</h3>
+<p><img alt="Episode_reward" src="res/td_error_80k.png" /></p>
+<p>The TD errors are significantly larger than before — ranging from <strong>&plusmn;150 to &plusmn;200</strong> compared to &plusmn;75–85 in the baseline. This is a direct consequence of the reward shaping: the +100 termination bonus creates large TD surprises whenever the agent reaches the goal, and the potential-based shaping adds variance to every step's reward.</p>
+<p>This is expected and not a concern — the errors remain <strong>bounded and symmetric around zero</strong> with no visible drift, indicating stable learning despite the higher magnitude.</p>
+<p><a id="q-value-improved"></a></p>
+<h3>Q-value Evolution</h3>
+<p><img alt="Episode_reward" src="res/q_values_80k.png" /></p>
+<p>Q max grows steadily to ~<strong>200</strong>, driven by the +100 success bonus propagating backward through the Q-table. Q mean stays relatively flat around <strong>5</strong> (near the optimistic initialization value), which makes sense: most states are visited infrequently enough that their Q-values haven't moved far from the initial 5.0.</p>
+<p>This is in stark contrast to the baseline, where Q mean drifted to -9 and Q max stayed near 0. The positive Q-values here reflect the shaped reward signal — states near the goal now have genuinely high estimated returns.</p>
+<p><a id="exploration-improved"></a></p>
+<h3>Exploration Signals</h3>
+<p><img alt="Episode_reward" src="res/exploration_80k.png" /></p>
+<p>Epsilon decays more gradually, reaching its minimum around episode 15,000–20,000 (vs ~5,000 before). Policy entropy drops from 1.10 to ~1.015, showing the policy becomes highly deterministic by the end.</p>
+<p>The slower epsilon decay means the agent had roughly <strong>3–4x more exploratory episodes</strong> before committing to its policy, which — combined with optimistic initialization — results in much better state-space coverage.</p>
+<p><a id="evaluation-improved"></a></p>
+<h2>Evaluating the trained model</h2>
+<p>I ran a <strong>1,000-episode inference sweep</strong> using the trained model and recorded the trajectories for analysis.</p>
+<p><a id="best-runs-improved"></a></p>
+<h3>Best runs</h3>
+<p>These are some of the <strong>best-performing trajectories</strong> sampled from the trained policy.</p>
+<div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">
+<div style="flex:1; min-width:200px;">
+    <video autoplay playsinline controls style="width:100%;">
+      <source src="res/episode_911_web_slow.mp4" type="video/mp4" />
+    </video>
+  </div>
+  <div style="flex:1; min-width:200px;">
+    <video autoplay playsinline controls style="width:100%;">
+      <source src="res/episode_46_web_slow.mp4" type="video/mp4" />
+    </video>
+  </div>
+  <div style="flex:1; min-width:200px;">
+    <video autoplay playsinline controls style="width:100%;">
+      <source src="res/episode_346_web_slow.mp4" type="video/mp4" />
+    </video>
+  </div>
+</div>
+<p><a id="worst-runs-improved"></a></p>
+<h3>Worst runs</h3>
+<p>These represent some of the <strong>less efficient trajectories</strong>, where the agent takes longer to reach the goal.</p>
+<div style="display:flex; flex-wrap:wrap; gap:12px; justify-content:center;">
+<div style="flex:1; min-width:200px;">
+    <video autoplay playsinline controls style="width:100%;">
+      <source src="res/episode_275_web_slow.mp4" type="video/mp4" />
+    </video>
+  </div>
+  <div style="flex:1; min-width:200px;">
+    <video autoplay playsinline controls style="width:100%;">
+      <source src="res/episode_98_web_slow.mp4" type="video/mp4" />
+    </video>
+  </div>
+  <div style="flex:1; min-width:200px;">
+    <video autoplay playsinline controls style="width:100%;">
+      <source src="res/episode_885_web_slow.mp4" type="video/mp4" />
+    </video>
+  </div>
+</div>
+<p>Even in the worst cases, the model <strong>still manages to reach the goal</strong>, although with a higher step count.</p>
+<p>One clear improvement over the baseline is in <strong>recovery behavior</strong>. In the earlier model, the agent would often get stuck in inefficient loops—swinging back and forth without building enough momentum (or going in circles). In contrast, the updated model is much better at <strong>escaping these dead-end dynamics</strong> and eventually recovering a trajectory that leads to the goal.</p>
+<p>This kind of behavior was rarely observed in the baseline, and it highlights a key improvement: the policy is not just more efficient on average, but also <strong>more robust under suboptimal states</strong>.</p>
+<p><a id="testing-improved"></a></p>
+<h3>Testing at scale</h3>
+<hr />
+<p><img alt="steps_histogram_80k" src="res/steps_histogram_80k.png" /></p>
+<p>Compared to the baseline, where <strong>2.1% of episodes</strong> hit the 500-step limit, the improved model shows a much tighter distribution, with this failure rate reduced to just <strong>0.0127%</strong>. The vast majority of episodes now cluster in the <strong>70–150 step range</strong>, which aligns well with the rolling average reward of ~-105. The long tail toward 500 steps is significantly thinner, indicating far fewer outright failures.</p>
+<p>This suggests that the combination of <strong>reward shaping</strong>, <strong>finer discretization</strong>, and <strong>optimistic initialization</strong> has not only improved the average performance but also made the policy substantially more reliable in worst-case scenarios.</p>
+<p>In this experiment, the <strong>mean episode length</strong> is <strong>120.2</strong>, and the <strong>most frequent step count</strong> is <strong>114</strong>. The logged <code>solve rate</code> is <strong>32.27%</strong>, which represents the percentage of episodes where the goal was achieved within <strong>100 steps</strong>.</p>
+<hr />
+<p><a id="summary-improvements"></a></p>
+<h2>Summary of improvements</h2>
+<table>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Baseline (50k ep)</th>
+<th>Improved (80k ep)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rolling avg reward</td>
+<td>~-275</td>
+<td>~-105</td>
+</tr>
+<tr>
+<td>Convergence</td>
+<td>Not converged</td>
+<td>Converged by ~20k</td>
+</tr>
+<tr>
+<td>Q-table size</td>
+<td>22,869</td>
+<td>480,000</td>
+</tr>
+<tr>
+<td>Discretization</td>
+<td>cos/sin intersection + fallback</td>
+<td>atan2 + np.digitize</td>
+</tr>
+<tr>
+<td>Reward signal</td>
+<td>Raw (-1/step)</td>
+<td>Shaped (tip height + bonus)</td>
+</tr>
+<tr>
+<td>Q-init</td>
+<td>Zeros</td>
+<td>Optimistic (5.0)</td>
+</tr>
+</tbody>
+</table>
+<p>The single biggest contributor to improvement is <strong>reward shaping</strong> - giving the agent a continuous signal based on tip height completely changes the learning dynamics. The other changes (finer bins, optimistic init, slower &epsilon; decay, LR decay) each contribute incrementally but are most effective in combination.</p>
+<p>The trade-off is a larger Q-table (480k vs 23k entries) and slightly more complex reward logic. But the table is still tiny by modern standards, and the shaping function is a simple closed-form expression.</p>
       </div>
       <footer class="site-footer">
                 <p>&copy; 2024 Om Vats &middot; <a href="/home/home.html">Home</a> &middot; <a href="/blog/list.html">Blog</a> &middot; <a href="/contact/contact.html">Contact</a></p>
