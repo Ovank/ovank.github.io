@@ -667,3 +667,151 @@ body {
     font-size: 14px;
   }
 }
+
+/* ═══════════════════════════════════════════════════════
+   Visit Counter Widget
+   ═══════════════════════════════════════════════════════ */
+.visit-counter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  margin: 40px auto 24px;
+  padding: 14px 28px;
+  border: 1px solid rgba(173, 255, 47, 0.15);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(15, 20, 15, 0.85), rgba(8, 8, 8, 0.9));
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  max-width: 420px;
+  animation: fadeIn 0.6s ease-out;
+}
+
+.visit-counter-home {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  margin: 0;
+  z-index: 10;
+}
+
+.visit-counter-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.visit-counter-divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(173, 255, 47, 0.2);
+}
+
+.visit-icon {
+  font-size: 20px;
+  color: #aaa;
+}
+
+.visit-label {
+  font-size: 13px;
+  color: #aaa;
+  font-weight: 400;
+}
+
+.visit-count {
+  font-size: 18px;
+  font-weight: 600;
+  color: greenyellow;
+}
+
+@media (max-width: 480px) {
+  .visit-counter {
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 18px;
+  }
+  .visit-counter-divider {
+    width: 60%;
+    height: 1px;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   Tracker Dev Panel (test mode only)
+   ═══════════════════════════════════════════════════════ */
+.tracker-test-controls {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid rgba(255, 152, 0, 0.3);
+  border-radius: 12px;
+  padding: 14px 18px;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 13px;
+  color: #ccc;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.5);
+  min-width: 220px;
+}
+
+.test-controls-header {
+  font-weight: 600;
+  font-size: 14px;
+  color: #ff9800;
+  margin-bottom: 10px;
+}
+
+.test-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.test-controls-label {
+  font-size: 12px;
+  color: #888;
+  min-width: 55px;
+}
+
+.test-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  color: #ccc;
+  padding: 4px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.test-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+}
+
+.test-btn-active {
+  background: rgba(255, 152, 0, 0.2);
+  border-color: #ff9800;
+  color: #ff9800;
+  font-weight: 600;
+}
+
+.test-btn-check {
+  width: 100%;
+  padding: 6px 10px;
+}
+
+.test-result {
+  font-size: 11px;
+  margin-top: 4px;
+  min-height: 16px;
+}
+
+.test-result-pass {
+  color: greenyellow;
+}
+
+.test-result-fail {
+  color: #f44336;
+}
